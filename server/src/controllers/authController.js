@@ -48,10 +48,14 @@ const login = async (req, res) => {
       expiresIn: "24h",
     });
 
+    // Prepare user data without password
+    const { password: _, ...userWithoutPassword } = user._doc;
+
     // Send response
     res.status(200).json({
       message: "Login successful",
       token,
+      user: userWithoutPassword,
     });
   } catch (err) {
     console.error("Login error:", err.message || err);
@@ -59,7 +63,19 @@ const login = async (req, res) => {
   }
 };
 
+// Logout
+const logout = (req, res) => {
+  // If you're using cookies, clear them
+  res.clearCookie("token"); // Optional if you're using cookies
+
+  // If you're using localStorage/sessionStorage, the client will handle token removal
+  res.status(200).json({ message: "Logout successful" });
+};
+
+module.exports = { logout };
+
 module.exports = {
   register,
   login,
+  logout,
 };
